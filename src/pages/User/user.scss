@@ -1,0 +1,49 @@
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+.userlist {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 80%;
+  gap: 40px;
+  &__table {
+    width: 100%;
+    overflow: auto;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  .userlist {
+    width: 50%;
+  }
+}
+@media only screen and (max-width: 1024px) {
+  .userlist {
+    width: 60%;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .userlist {
+    width: 80%;
+  }
+}

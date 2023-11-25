@@ -1,0 +1,47 @@
+* {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+.postlistcontainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: #fafafa;
+}
+.postlistcontainer__postlist {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 70%;
+  gap: 40px;
+}
+.postlistcontainer__postlist__table {
+  max-height: 40rem;
+  overflow: auto;
+}
+.button {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  button {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    background-color: #f6f6f6;
+    cursor: pointer;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  .postlistcontainer__postlist {
+    max-width: 85%;
+  }
+}
