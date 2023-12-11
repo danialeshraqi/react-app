@@ -1,18 +1,12 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
 import "./postlist.scss";
+import axios from "axios";
+import { Table, TableCell, TableRow } from "@mui/material";
+import { usePostList } from "../Api/getPost";
 
 export const PostList = () => {
-  const [post, setPost] = useState();
-  const getPost = () => {
-    fetch("https://jsonplaceholder.typicode.com/posts")
-      .then((response) => response.json())
-      .then((json) => setPost(json));
-  };
-  useEffect(() => {
-    getPost();
-  }, []);
+  const post = usePostList();
+
   return (
     <div className="postlistcontainer">
       <div className="postlistcontainer__postlist">
@@ -23,33 +17,31 @@ export const PostList = () => {
           </Link>
         </div>
         <div className="postlistcontainer__postlist__table">
-          <table>
-            <tr>
-              <th>Body</th>
-              <th>Title</th>
-              <th>Action</th>
-            </tr>
+          <Table>
+            <TableRow>
+              <TableCell>Body</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
             {post?.map((item) => {
               return (
-                <tr>
-                  <td>{item.body}</td>
-                  <td>{item.title}</td>
-                  <td
+                <TableRow>
+                  <TableCell>{item.body}</TableCell>
+                  <TableCell>{item.title}</TableCell>
+                  <TableCell
                     onClick={() => {
-                      fetch(
+                      axios.delete(
                         "https://jsonplaceholder.typicode.com/posts/" + item.id,
-                        {
-                          method: "DELETE",
-                        }
+                        {}
                       );
                     }}
                   >
                     Delete
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </table>
+          </Table>
           <ul></ul>
         </div>
       </div>

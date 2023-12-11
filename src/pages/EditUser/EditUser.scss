@@ -3,10 +3,10 @@
   padding: 0;
   margin: 0;
 }
-.creatpost {
+.edituser {
   margin-bottom: 50px;
 }
-.postcontainer {
+.edit {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,7 +14,7 @@
   height: 100%;
   background-color: #fafafa;
 }
-.post {
+.editcontainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -23,9 +23,8 @@
   width: 35%;
   background-color: #ffffff;
   padding: 40px 20px;
-
   border-radius: 20px;
-  &__title {
+  &__name {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -41,10 +40,6 @@
       padding: 10px 12px;
       font-size: 20px;
     }
-  }
-  &__error {
-    font-size: 12px !important;
-    color: coral;
   }
   button {
     margin-top: 2rem;

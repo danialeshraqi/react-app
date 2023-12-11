@@ -10,25 +10,6 @@ export const Home = () => {
 
   return (
     <div className="headcontainer">
-      <div className="head">
-        <ul className="head__navbarlist">
-          <li>
-            <Link to="/user">User</Link>
-          </li>
-          <li>
-            <Link to="/Post">Post</Link>
-          </li>
-          <li>Profile</li>
-          <li
-            onClick={() => {
-              localStorage.removeItem("token");
-              window.location.reload();
-            }}
-          >
-            Exit
-          </li>
-        </ul>
-      </div>
       <div className="img__slider">
         <img
           className="img__slider__page"

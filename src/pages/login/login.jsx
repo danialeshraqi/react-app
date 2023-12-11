@@ -1,14 +1,56 @@
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import "./login.scss";
 import { useNavigate } from "react-router";
+import axios from "axios";
+import { Button, TextField } from "@mui/material";
+import * as yup from "yup";
+import { useCallback } from "react";
+export const useYupValidationResolver = (validationSchema) =>
+  useCallback(
+    async (data) => {
+      try {
+        const values = await validationSchema.validate(data, {
+          abortEarly: false,
+        });
+
+        return {
+          values,
+          errors: {},
+        };
+      } catch (errors) {
+        return {
+          values: {},
+          errors: errors.inner.reduce(
+            (allErrors, currentError) => ({
+              ...allErrors,
+              [currentError.path]: {
+                type: currentError.type ?? "validation",
+                message: currentError.message,
+              },
+            }),
+            {}
+          ),
+        };
+      }
+    },
+    [validationSchema]
+  );
+
+const validationSchema = yup.object({
+  username: yup.string().min(4).required("Enter more than 4 letters"),
+  password: yup.string().min(6).required("Enter more than 6 letters"),
+});
+
 export const Login = () => {
+  const resolver = useYupValidationResolver(validationSchema);
   const methods = useForm({
     mode: "onSubmit",
+    resolver: resolver,
   });
   const {
     control,
     watch,
-    formState: { isSubmitted },
+    formState: { isSubmitted, errors },
   } = methods;
   const username = watch("username");
   const password = watch("password");
@@ -16,28 +58,22 @@ export const Login = () => {
   const login = (data) => {
     if (!username || username.length < 4 || !password || password.length < 6)
       return;
-    fetch("https://fakestoreapi.com/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    axios
+      .post("https://fakestoreapi.com/auth/login", {
         username: data.username,
         password: data.password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.token) {
-          localStorage.setItem("token", JSON.stringify(json.token));
+      })
+      .then(function (response) {
+        if (response.data.token) {
+          localStorage.setItem("token", JSON.stringify(response.data.token));
           localStorage.setItem("user", JSON.stringify(data.username));
+          localStorage.setItem("password", JSON.stringify(data.password));
           navigate("/home");
         } else {
           alert("Username or password is wrong");
         }
       })
-      .catch((error) => {
-        alert("Username or password is wrong");
+      .catch(function (error) {
         console.log(error);
       });
   };
@@ -49,68 +85,60 @@ export const Login = () => {
           className="login-page__container"
         >
           <div className="login-page__container__title-container">
-            {/* <span>img</span> */}
             <span className="login-page__container__title">WebSite</span>
           </div>
           <div className="login-page__container__field-input">
-            <span className="login-page__container__field-input__label">
-              UserName
-            </span>
             <Controller
               control={control}
               name="username"
               render={({ field }) => (
-                <input
+                <TextField
+                  id="outlined-basic"
+                  label="Username"
+                  variant="outlined"
+                  color="primary"
+                  fullWidth={true}
                   {...field}
                   className="login-page__container__field-input__input"
                   type="text"
                 />
               )}
             />
-            {isSubmitted ? (
-              <span className="login-page__container__field-input__caption">
-                {username?.length < 4 ? (
-                  " Please enter more than 4 lettres"
-                ) : !username ? (
-                  "Please enter username"
-                ) : (
-                  <></>
-                )}
-              </span>
-            ) : (
-              <></>
-            )}
+
+            <span className="login-page__container__field-input__caption">
+              {errors?.username?.message}
+            </span>
           </div>
           <div className="login-page__container__field-input">
-            <span className="login-page__container__field-input__label">
-              Password
-            </span>
             <Controller
               control={control}
               name="password"
               render={({ field }) => (
-                <input
+                <TextField
+                  id="outlined-basic"
+                  label="Password"
+                  variant="outlined"
+                  color="primary"
+                  fullWidth={true}
                   {...field}
                   className="login-page__container__field-input__input"
                   type="text"
                 />
               )}
             />
-            {isSubmitted ? (
-              <span className="login-page__container__field-input__caption">
-                {password?.length < 6 ? (
-                  " Please enter more than 6 lettres"
-                ) : !password ? (
-                  "Please enter password"
-                ) : (
-                  <></>
-                )}
-              </span>
-            ) : (
-              <></>
-            )}
+            <span className="login-page__container__field-input__caption">
+              {errors?.password?.message}
+            </span>
           </div>
-          <button type="submit">SING IN</button>
+          <Button
+            size="large"
+            variant="contained"
+            color="primary"
+            type="submit"
+          >
+            {" "}
+            SING IN
+          </Button>
         </form>
       </FormProvider>
     </div>
