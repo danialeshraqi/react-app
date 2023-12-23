@@ -1,6 +1,14 @@
 import { Navigate, Route, Routes, useNavigate } from "react-router";
-import { Login, Home, User, Post, Error404, PostList, EditUser } from "./pages";
-import { Link } from "react-router-dom";
+import {
+  Login,
+  Home,
+  User,
+  Post,
+  Error404,
+  PostList,
+  EditUser,
+  Profile,
+} from "./pages";
 import {
   AppBar,
   Avatar,
@@ -8,14 +16,15 @@ import {
   Button,
   Container,
   IconButton,
-  Menu,
-  MenuItem,
   Toolbar,
-  Tooltip,
   Typography,
 } from "@mui/material";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { myStore } from "./redux/store";
 
 const ProtectedRout = ({ children }) => {
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
   const navigate = useNavigate();
   const pages = [
     {
@@ -45,13 +54,12 @@ const ProtectedRout = ({ children }) => {
     {
       name: "Exit",
       click: () => {
-        localStorage.removeItem("token");
+        dispatch({ type: "REMOVE" });
         window.location.reload();
       },
     },
   ];
-
-  if (!localStorage.getItem("token")) return <Navigate to="/login" />;
+  if (!state.token) return <Navigate to="/login" />;
   else
     return (
       <>
@@ -108,7 +116,7 @@ const ProtectedRout = ({ children }) => {
               <Box sx={{ flexGrow: 0 }}>
                 <IconButton>
                   <Avatar
-                    alt={localStorage.getItem("user").replace('"', "")}
+                    alt={state.username.replace('"', "")}
                     src="/static/images/avatar/2.jpg"
                   />
                 </IconButton>
@@ -124,84 +132,63 @@ const ProtectedRout = ({ children }) => {
 
 function App() {
   return (
-    <div className="App">
-      <Routes>
-        <Route path="*" element={<Error404 />} />
-        <Route path="/" element={<Navigate to="/login" />} />
-        <Route
-          path="/login"
-          element={
-            !localStorage.getItem("token") ? <Login /> : <Navigate to="/home" />
-          }
-        />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRout>
-              <Home />
-            </ProtectedRout>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRout>
-              <div className="edit">
-                <div className="editcontainer">
-                  <Avatar
-                    style={{ width: "120px", height: "120px" }}
-                    alt={localStorage.getItem("user").replace('"', "")}
-                    src="/static/images/avatar/2.jpg"
-                  ></Avatar>
-                  <input
-                    className="editcontainer__name__input"
-                    value={localStorage.getItem("user")}
-                    type="text"
-                  />
-                  <input
-                    className="editcontainer__name__input"
-                    value={localStorage.getItem("password")}
-                    type="text"
-                  />
-                </div>
-              </div>
-            </ProtectedRout>
-          }
-        />
-        <Route
-          path="/user"
-          element={
-            <ProtectedRout>
-              <User />
-            </ProtectedRout>
-          }
-        />
-        <Route
-          path="/user/:id"
-          element={
-            <ProtectedRout>
-              <EditUser />
-            </ProtectedRout>
-          }
-        />
-        <Route
-          path="/post"
-          element={
-            <ProtectedRout>
-              <PostList />
-            </ProtectedRout>
-          }
-        />
-        <Route
-          path="/post/add"
-          element={
-            <ProtectedRout>
-              <Post />
-            </ProtectedRout>
-          }
-        />
-      </Routes>
-    </div>
+    <Provider store={myStore}>
+      <div className="App">
+        <Routes>
+          <Route path="*" element={<Error404 />} />
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRout>
+                <Home />
+              </ProtectedRout>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRout>
+                <Profile />
+              </ProtectedRout>
+            }
+          />
+          <Route
+            path="/user"
+            element={
+              <ProtectedRout>
+                <User />
+              </ProtectedRout>
+            }
+          />
+          <Route
+            path="/user/:id"
+            element={
+              <ProtectedRout>
+                <EditUser />
+              </ProtectedRout>
+            }
+          />
+          <Route
+            path="/post"
+            element={
+              <ProtectedRout>
+                <PostList />
+              </ProtectedRout>
+            }
+          />
+          <Route
+            path="/post/add"
+            element={
+              <ProtectedRout>
+                <Post />
+              </ProtectedRout>
+            }
+          />
+        </Routes>
+      </div>
+    </Provider>
   );
 }
 

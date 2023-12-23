@@ -18,6 +18,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Key } from "@mui/icons-material";
 import { useGetUser } from "../Api/getuser";
 import { deleteUser } from "../Api/deleteUser";
+
 export const User = () => {
   const [open, setOpen] = useState(false);
   const [opendel, setOpendel] = useState(false);

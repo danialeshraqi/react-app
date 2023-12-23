@@ -5,6 +5,8 @@ import axios from "axios";
 import { Button, TextField } from "@mui/material";
 import * as yup from "yup";
 import { useCallback } from "react";
+import { useDispatch } from "react-redux";
+
 export const useYupValidationResolver = (validationSchema) =>
   useCallback(
     async (data) => {
@@ -50,11 +52,12 @@ export const Login = () => {
   const {
     control,
     watch,
-    formState: { isSubmitted, errors },
+    formState: { errors },
   } = methods;
   const username = watch("username");
   const password = watch("password");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const login = (data) => {
     if (!username || username.length < 4 || !password || password.length < 6)
       return;
@@ -65,9 +68,9 @@ export const Login = () => {
       })
       .then(function (response) {
         if (response.data.token) {
-          localStorage.setItem("token", JSON.stringify(response.data.token));
-          localStorage.setItem("user", JSON.stringify(data.username));
-          localStorage.setItem("password", JSON.stringify(data.password));
+          dispatch({ type: "TOKEN", data: response.data.token });
+          dispatch({ type: "CHANGEUSER", data: data.username });
+          dispatch({ type: "CHANGEPASSWORD", data: data.password });
           navigate("/home");
         } else {
           alert("Username or password is wrong");
